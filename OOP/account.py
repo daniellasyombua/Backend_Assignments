@@ -1,13 +1,13 @@
 class Account:
-    def __init__(self,name,account_number,accounts,recipient):
+    def __init__(self,name,account_number):
         self.name = name
         self.balance = 0
         self.deposits = []
         self.withdrawals = []
         self.transfers =[]
-        self.accounts = {"12345":"owner": "Alice", "balance": 1000,"54321":"owner": "Bob", "balance": 500}
+        self.accounts = [{"account_number":12345, "owner":"Alice", "balance": 1000}, {"account_number": 54321, "owner": "Bob", "balance": 500}]
         self.account_number = account_number
-        self.recipient = recipient
+        self.recipient = {"name": "Yordanos", "account_number": 123456789}
         self.transactions =[]
 
     def deposit(self,amount):
@@ -31,8 +31,8 @@ class Account:
         self.balance = deposits - ( withdrawals + transfers)
         return balance
 
-    def transfer_funds(self,amount,recipient):
-        if self == recipient:
+    def transfer_funds(self,amount):
+        if self.account_number == self.recipient.account_number:
             print("You cannot transfer funds to your own account")
         elif amount <= self.balance:
             self.balance = self.balance - amount
@@ -53,11 +53,11 @@ class Account:
         print(f"Balance: ${self.balance}\n")   
 
     def account_statement(self):
-        statement = f"Account Statement for Account #{self.account_number}:\n"
-        statement += f"Initial Balance: {self.balance}\n"
-        statement += "Transactions:\n"
+        statement = f"Account Statement for Account #{self.account_number}"
+        statement += f"Initial Balance: {self.balance}"
+        statement += "Transactions"
         for transaction in self.transactions:
-            statement += f"- {transaction}\n"
+            statement += f"- {transaction}"
         statement += f"Final Balance: {self.balance}"
         return statement
 
@@ -65,18 +65,27 @@ class Account:
     # def set_min_balance(self):
 
 
-    # def change_account_owner(self):
-     if account_number in accounts:
-        accounts[account_number]['owner'] = new_owner
-        print(f"Account {account_number} owner updated to {new_owner}")
-        return True
-    else:
-        print(f"Account {account_number} not found.")
-        return False
+
+
+    def change_account_owner(self):
+        if account_number in accounts:
+            accounts[account_number]['owner'] = new_owner
+            print(f"Account {account_number} owner updated to {new_owner}")
+            return True
+        else:
+            print(f"Account {account_number} not found.")
+            return False
 
 
     def interest_calculation(self,principal,rate,time):
-    interest = principal * rate * time
-    return interest
+        interest = principal * rate * time
+        return interest
 
-    # def close_account(self):
+    def close_account(self,username):
+        for account in accounts:
+            if account.username == username:
+                accounts.remove(account)
+                print(f"Account for {username} closed.")
+                return
+            else:
+                print("Account not found.")
