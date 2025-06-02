@@ -16,32 +16,29 @@ class Account:
     def __init__(self, owner, account_number):
         self.__account_number = account_number
         self.owner = owner
-        self.__transactions = []
+        self.transactions = []
         self.__loan = 0
         self.frozen = False
         self.__min_balance = 0
+        
 
-    def is_active(self):
-        return not self.frozen
 
     def deposit(self, amount):
-        if not self.is_active():
+        if self.frozen == True:
             return "Account is frozen. Cannot deposit."
-        if amount < 0:
-            return "You have insufficient funds"
-            self.deposits.append(amount)
-            self.transactions.append(f"Deposit: +{amount}")
-            self.balance = self.get_balance()
-            return f"Confirmed, you have received {amount}, new balance is {self.balance}"
-            
+        if amount <= 0:
+            return "Deposit amount must be positive."
+        self.transactions.append(Transaction("Deposit", amount, "credit"))
+        return f"Deposited {amount:.2f}. New balance is {self.get_balance():.2f}"
+
     def withdraw(self, amount):
-        if not self.is_active():
+        if self.frozen == True:
             return "Account is frozen. Cannot withdraw."
         if amount <= 0:
             return "Withdrawal amount must be positive."
         if self.get_balance() - amount < self.__min_balance:
             return f"Insufficient funds. Minimum balance of {self.__min_balance:.2f} must be maintained."
-        self.__transactions.append(Transaction("Withdrawal", -amount, "debit"))
+        self.transactions.append(Transaction("Withdrawal", -amount, "debit"))
         return f"Withdrew {amount:.2f}. New balance is {self.get_balance():.2f}"
 
     def transfer_funds(self, amount, target_account):
@@ -50,19 +47,19 @@ class Account:
         withdrawal_result = self.withdraw(amount)
         if "Withdrew" in withdrawal_result:
             target_account.deposit(amount)
-            self.__transactions.append(Transaction(f"Transfer to {target_account.owner}", -amount, "debit"))
-            target_account.__transactions.append(Transaction(f"Transfer from {self.owner}", amount, "credit"))
+            self.transactions.append(Transaction(f"Transfer to {target_account.owner}", -amount, "debit"))
+            target_account.transactions.append(Transaction(f"Transfer from {self.owner}", amount, "credit"))
             return f"Transferred {amount:.2f} to {target_account.owner}."
         return withdrawal_result
 
     def get_balance(self):
-        return sum(t.amount for t in self.__transactions)
+        return sum(transaction.amount for transaction in self.transactions)
 
     def request_loan(self, amount):
         if amount <= 0:
             return "Loan amount must be positive."
         self.__loan += amount
-        self.__transactions.append(Transaction("Loan", amount, "credit"))
+        self.transactions.append(Transaction("Loan", amount, "credit"))
         return f"Loan of {amount:.2f} approved. New balance is {self.get_balance():.2f}"
 
     def repay_loan(self, amount):
@@ -70,12 +67,12 @@ class Account:
             return "Repayment must be positive."
         repay_amount = min(amount, self.__loan)
         self.__loan -= repay_amount
-        self.__transactions.append(Transaction("Loan Repayment", -repay_amount, "debit"))
+        self.transactions.append(Transaction("Loan Repayment", -repay_amount, "debit"))
         return f"Repaid {repay_amount:.2f} of loan. Remaining loan: {self.__loan:.2f}"
 
     def apply_interest(self):
         interest = self.get_balance() * 0.05
-        self.__transactions.append(Transaction("Interest Applied", interest, "credit"))
+        self.transactions.append(Transaction("Interest Applied", interest, "credit"))
         return f"Interest of {interest:.2f} applied. New balance: {self.get_balance():.2f}"
 
     def view_account_details(self):
@@ -87,8 +84,8 @@ class Account:
 
     def account_statement(self):
         print(f"Statement for {self.owner}'s Account:")
-        for txn in self.__transactions:
-            print(txn)
+        for transaction in self.transactions:
+            print(transaction)
 
     def freeze_account(self):
         self.frozen = True
@@ -105,7 +102,7 @@ class Account:
         return f"Minimum balance set to {self.__min_balance:.2f}"
 
     def close_account(self):
-        self.__transactions.clear()
+        self.transactions.clear()
         self.__loan = 0
         return "Account closed. All transactions cleared and balance reset."
 
@@ -113,30 +110,13 @@ class Account:
         return self.__account_number
 
     def get_transactions(self):
-        return list(self.__transactions)
+        return list(self.transactions)
 
 
 
-acc1 = Account("Alice", "123456")
-acc2 = Account("Bob", "654321")
-transaction = Transaction(200,"Witdrawal","Credit")
-transaction = Transaction(1000,"Deposit","debit")
 
 
-print(acc1.deposit(1000))
-print(acc1.withdraw(200))
-print(acc1.transfer_funds(100, acc2))
-print(acc1.request_loan(500))
-print(acc1.repay_loan(200))
-# print(acc1.apply_interest())
-acc1.account_statement()
-print(acc1.freeze_account())
-print(acc1.withdraw(100)) # Should fail
-print(acc1.unfreeze_account())
-print(acc1.set_minimum_balance(300))
-print(acc1.withdraw(800)) # Should fail due to minimum balance
-print(acc1.change_account_owner("Alice Johnson"))
-print(acc1.view_account_details())
-print(acc1.close_account())
+
+
 
 
