@@ -55,6 +55,16 @@ class Account:
     def get_balance(self):
         return sum(transaction.amount for transaction in self.transactions)
 
+    def calculate_loan_limit(self):
+        # tatal_deposits = sum(self.transactions.append(Transaction("Deposit", amount, "credit")))
+        depo = []
+        for transaction in self.transactions:
+            if transaction_type == "Deposit":
+                depo.append(amount)
+                
+                return depo//3
+
+
     def request_loan(self, amount):
         if amount <= 0:
             return "Loan amount must be positive."
@@ -111,8 +121,6 @@ class Account:
 
     def get_transactions(self):
         return list(self.transactions)
-
-
 
 
 
