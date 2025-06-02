@@ -118,22 +118,5 @@ class Account:
 
 
 
-acc1 = Account("Alice", "123456")
-acc2 = Account("Bob", "654321")
 
-print(acc1.deposit(10000))
-print(acc1.withdraw(200))
-print(acc1.transfer(100, acc2))
-print(acc1.request_loan(500))
-print(acc1.repay_loan(200))
-print(acc1.apply_interest())
-acc1.account_statement()
-print(acc1.freeze_account())
-print(acc1.withdraw(100)) # Should fail
-print(acc1.unfreeze_account())
-print(acc1.set_minimum_balance(300))
-print(acc1.withdraw(800)) # Should fail due to minimum balance
-print(acc1.change_account_owner("Alice Johnson"))
-print(acc1.view_account_details())
-print(acc1.close_account())
 
